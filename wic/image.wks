@@ -1,0 +1,13 @@
+#
+#   Partition   Start Sector    Number of Sectors
+#   idbloader    64             8192        (idbloader / U-Boot SPL)
+#   u-boot       16384          8192        (U-Boot proper)
+#   config       24576          262144      (config)
+#   root         286720         -
+
+part idbloader  --offset 32K    --fixed-size 4096K --part-name idbloader   --source rawcopy --sourceparams="file=${SPL_BINARY}"
+part u-boot     --offset 8M     --fixed-size 4096K --part-name u-boot      --source rawcopy --sourceparams="file=u-boot.${UBOOT_SUFFIX}"
+part config     --offset 12M    --fixed-size 128M  --fstype=ext4 --part-name config    --source bootimg-partition
+part /          --offset 140M   --label rootfs    --active      --fstype=ext4 --part-name rootfs   --source rootfs --uuid="${ROOT_PARTUUID}"
+
+bootloader --ptable gpt
