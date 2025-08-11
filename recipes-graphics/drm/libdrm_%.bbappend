@@ -1,0 +1,1 @@
+PACKAGECONFIG = "libkms install-test-programs"
