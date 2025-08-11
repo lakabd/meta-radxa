@@ -3,8 +3,8 @@ LICENSE = "MIT"
 
 inherit core-image
 
-EXTRA_IMAGEDEPENDS += "virtual/bootloader"
+EXTRA_IMAGEDEPENDS += "virtual/bootloader virtual/dtb"
 
 IMAGE_FEATURES += "ssh-server-openssh"
 
-IMAGE_BOOT_FILES = "u-boot.${UBOOT_SUFFIX} ${SPL_BINARY} ${SOC_FAMILY}-${MACHINE}.dtb"
+IMAGE_BOOT_FILES = "u-boot.${UBOOT_SUFFIX} ${SPL_BINARY} ${SOC_FAMILY}-${MACHINE}.dtb devicetree/*;overlays/"
