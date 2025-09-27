@@ -1,0 +1,12 @@
+[Unit]
+Description=Mount User Data Partition on /home/root
+After=first-boot.service
+
+[Mount]
+What=/dev/disk/by-uuid/3797a48f-aae6-48ec-83e8-f7bdf9c85c25
+Where=/home/root
+Type=ext4
+Options=defaults,nofail
+
+[Install]
+WantedBy=multi-user.target

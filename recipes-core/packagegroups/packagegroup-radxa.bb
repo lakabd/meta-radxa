@@ -12,11 +12,18 @@ PACKAGES += " \
 "
 
 RDEPENDS:packagegroup-radxa-base = " \
+    packagegroup-core-buildessential \
+    packagegroup-core-tools-debug \
     systemd-analyze \
     i2c-tools \
     libgpiod \
     util-linux \
     nano \
+    e2fsprogs-mke2fs \
+    e2fsprogs-resize2fs \
+    gptfdisk \
+    parted \
+    first-boot \
 "
 
 RDEPENDS:packagegroup-radxa-media = " \
