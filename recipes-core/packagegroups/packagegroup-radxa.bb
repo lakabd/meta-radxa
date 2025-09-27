@@ -28,6 +28,10 @@ RDEPENDS:packagegroup-radxa-base = " \
 
 RDEPENDS:packagegroup-radxa-media = " \
     v4l-utils \
+    gstreamer1.0 \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad \
 "
 
 RDEPENDS:packagegroup-radxa-graphics = " \
