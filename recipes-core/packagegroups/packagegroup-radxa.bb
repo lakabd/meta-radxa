@@ -35,4 +35,5 @@ RDEPENDS:packagegroup-radxa-graphics = " \
     libdrm-tests \
     libdrm-dev \
     libdrm-kms \
+    rockchip-libmali \
 "
