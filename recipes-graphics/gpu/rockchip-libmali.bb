@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = "file://END_USER_LICENCE_AGREEMENT.txt;md5=3918cc9836ad038c5a090a0280233eea"
 
-SRCREV = "e6cc002edea6c1db446c78a720156186aff6b1a4"
+SRCREV = "309268f7a34ca0bba0ab94a0b09feb0191c77fb8"
 SRCBRANCH = "libmali"
 SRC_URI = "git://github.com/JeffyCN/mirrors.git;protocol=https;branch=${SRCBRANCH};"
 
@@ -16,7 +16,7 @@ PROVIDES:append = " virtual/egl virtual/libgles1 virtual/libgles2 virtual/libgle
 RPROVIDES:${PN}:append = " libmali"
 
 MALI_GPU ?= "valhall-g610"
-MALI_VERSION ?= "g13p0"
+MALI_VERSION ?= "g6p0"
 MALI_SUBVERSION ?= "none"
 MALI_PLATFORM ?= "gbm"
 
