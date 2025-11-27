@@ -23,6 +23,7 @@ RDEPENDS:packagegroup-radxa-base = " \
     e2fsprogs-resize2fs \
     gptfdisk \
     parted \
+    glibc-utils \
     first-boot \
 "
 
