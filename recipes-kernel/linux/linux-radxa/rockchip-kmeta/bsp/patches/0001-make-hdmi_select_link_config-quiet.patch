@@ -1,0 +1,25 @@
+From 8b87dfa61c76ad0788a53722ad7404158ab01e88 Mon Sep 17 00:00:00 2001
+From: Kas User <kas@example.com>
+Date: Tue, 30 Sep 2025 19:23:15 +0000
+Subject: [PATCH] make hdmi_select_link_config() quiet
+
+---
+ drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+index ed06757c8280..4b5392bbdd44 100644
+--- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
++++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+@@ -806,7 +806,7 @@ static void hdmi_select_link_config(struct rockchip_hdmi *hdmi,
+ 	hdmi->link_cfg.add_func = hdmi->add_func;²
+ 
+ 	if (!max_frl_rate || (tmdsclk < HDMI20_MAX_RATE && mode.clock < HDMI20_MAX_RATE)) {
+-		dev_info(hdmi->dev, "use tmds mode\n");
++		dev_dbg(hdmi->dev, "use tmds mode\n");
+ 		hdmi->link_cfg.frl_mode = false;
+ 		return;
+ 	}
+-- 
+2.39.2
+

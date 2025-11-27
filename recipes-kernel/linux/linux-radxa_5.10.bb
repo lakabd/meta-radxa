@@ -18,5 +18,6 @@ SRCREV = "${AUTOREV}"
 SRCBEANCH = "linux-5.10-gen-rkr3.4"
 SRC_URI = " \
 	git://github.com/radxa/kernel.git;protocol=https;branch=${SRCBEANCH}; \
-	file://rockchip-kmeta/bsp/wifi.cfg \
+	file://rockchip-kmeta/bsp/cfg/wifi.cfg \
+	file://rockchip-kmeta/bsp/patches/0001-make-hdmi_select_link_config-quiet.patch \
 "
