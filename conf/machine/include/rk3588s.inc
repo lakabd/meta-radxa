@@ -3,3 +3,5 @@ MACHINEOVERRIDES =. "rk3588s:"
 DEFAULTTUNE ?= "cortexa76-cortexa55-crypto"
 
 require conf/machine/include/arm/armv8-2a/tune-cortexa76-cortexa55.inc
+
+RK_ISP_VERSION := "3.0"

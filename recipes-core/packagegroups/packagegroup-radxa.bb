@@ -33,6 +33,7 @@ RDEPENDS:packagegroup-radxa-media = " \
     gstreamer1.0-plugins-base \
     gstreamer1.0-plugins-good \
     gstreamer1.0-plugins-bad \
+    rockchip-rkaiq-3A-server \
 "
 
 RDEPENDS:packagegroup-radxa-graphics = " \

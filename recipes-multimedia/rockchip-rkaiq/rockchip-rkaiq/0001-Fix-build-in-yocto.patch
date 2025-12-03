@@ -1,0 +1,85 @@
+From 1fb0d85d5300ab8a046aab5d277272af3e762502 Mon Sep 17 00:00:00 2001
+From: lakabd <lakbir.abder@gmail.com>
+Date: Tue, 2 Dec 2025 20:39:20 +0100
+Subject: [PATCH] Fix build in yocto
+
+---
+ IspFec/CMakeLists.txt             |  2 +-
+ rkaiq/cmake/CompileOptions.cmake  | 14 +++++++++-----
+ rkaiq/iq_parser_v2/CMakeLists.txt |  2 +-
+ rkaiq_3A_server/CMakeLists.txt    |  7 ++++---
+ 4 files changed, 15 insertions(+), 10 deletions(-)
+
+diff --git a/rkaiq/cmake/CompileOptions.cmake b/rkaiq/cmake/CompileOptions.cmake
+index 47edbef16fe6..adccffc9f678 100644
+--- a/rkaiq/cmake/CompileOptions.cmake
++++ b/rkaiq/cmake/CompileOptions.cmake
+@@ -23,11 +23,15 @@ if (ARCH STREQUAL "arm")
+         )
+ endif()
+ 
+-if (ARCH STREQUAL "aarch64")
+-    add_compile_options(
+-        -march=armv8-a
+-        )
+-endif()
++
++# This conflicts with Yocto's -mcpu=cortex-a76.cortex-a55
++#
++#if (ARCH STREQUAL "aarch64")
++#    add_compile_options(
++#        -march=armv8-a
++#        )
++#endif()
++
+ 
+ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+     if (ARCH STREQUAL "arm")
+diff --git a/rkaiq/iq_parser_v2/CMakeLists.txt b/rkaiq/iq_parser_v2/CMakeLists.txt
+index 711baa67da73..49e465343e6e 100644
+--- a/rkaiq/iq_parser_v2/CMakeLists.txt
++++ b/rkaiq/iq_parser_v2/CMakeLists.txt
+@@ -25,7 +25,7 @@ endif()
+ #########################################################
+ add_custom_command(
+     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output.h
+-    COMMAND ${CMAKE_C_COMPILER}
++    COMMAND ${CMAKE_C_COMPILER}  --sysroot=${CMAKE_SYSROOT}  # CMake does not automatically add --sysroot to add_custom_command
+     ${rk_aiq_SOURCE_DIR}/include/iq_parser_v2/RkAiqCalibDbTypesV2.h -E -C -o .temp.h ${ISP_HW_VERSION} ${DEFINE_USE_NEWSTRUCT}
+     -I${rk_aiq_SOURCE_DIR}/
+     -I${rk_aiq_SOURCE_DIR}/include
+diff --git a/rkaiq_3A_server/CMakeLists.txt b/rkaiq_3A_server/CMakeLists.txt
+index b8e0fcaff0c3..db8b278a5edb 100644
+--- a/rkaiq_3A_server/CMakeLists.txt
++++ b/rkaiq_3A_server/CMakeLists.txt
+@@ -134,11 +134,12 @@ if(BUILDROOT_BUILD_PROJECT)
+ 		WORLD_EXECUTE WORLD_READ)
+ else()
+ 	install(TARGETS rkaiq_3A_server
+-		RUNTIME DESTINATION "usr/bin"
+-		LIBRARY DESTINATION "usr/lib"
++		# Don't hardcode install paths; otherwise you end up with destination looking like: /usr/usr/bin/rkaiq_3A_server
++		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+ 		)
+ 
+-	install(FILES S40rkaiq_3A DESTINATION "etc/init.d"
++	install(FILES S40rkaiq_3A DESTINATION "${CMAKE_INSTALL_SYSCONFDIR}/init.d"
+ 		PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+ 		GROUP_EXECUTE GROUP_READ
+ 		WORLD_EXECUTE WORLD_READ)
+diff --git a/IspFec/CMakeLists.txt b/IspFec/CMakeLists.txt
+index 464a2472dcc6..75b35b7f6f6d 100644
+--- a/IspFec/CMakeLists.txt
++++ b/IspFec/CMakeLists.txt
+@@ -127,6 +127,6 @@ install(FILES ${PROJECT_BINARY_DIR}/rkfec_config.h DESTINATION include/IspFec)
+ install(DIRECTORY include/ DESTINATION include/IspFec FILES_MATCHING PATTERN "*.h")
+ install(FILES ${CMAKE_LIBRARY_PATH}/libIspFec.so DESTINATION lib)
+ install(FILES ${CMAKE_LIBRARY_PATH}/libIspFec_static.a DESTINATION lib RENAME libIspFec.a)
+-install(DIRECTORY fec_calib/ DESTINATION usr/share/fec_calib FILES_MATCHING PATTERN "*.ini")
++install(DIRECTORY fec_calib/ DESTINATION ${CMAKE_INSTALL_DATADIR}/fec_calib FILES_MATCHING PATTERN "*.ini")
+ 
+ add_subdirectory(sample)
+-- 
+2.34.1
+
