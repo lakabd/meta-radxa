@@ -1,0 +1,11 @@
+[Unit]
+Description=Rockchip ISP 3A engine
+Before=rockchip.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/rkaiq_3A_server
+ExecStop=/usr/bin/killall rkaiq_3A_server
+
+[Install]
+WantedBy=multi-user.target

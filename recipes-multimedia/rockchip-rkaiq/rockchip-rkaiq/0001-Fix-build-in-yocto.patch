@@ -4,63 +4,51 @@ Date: Tue, 2 Dec 2025 20:39:20 +0100
 Subject: [PATCH] Fix build in yocto
 
 ---
- IspFec/CMakeLists.txt             |  2 +-
- rkaiq/cmake/CompileOptions.cmake  | 14 +++++++++-----
- rkaiq/iq_parser_v2/CMakeLists.txt |  2 +-
- rkaiq_3A_server/CMakeLists.txt    |  7 ++++---
- 4 files changed, 15 insertions(+), 10 deletions(-)
+ CMakeLists.txt                 | 4 +++-
+ iq_parser_v2/CMakeLists.txt    | 2 +-
+ rkaiq_3A_server/CMakeLists.txt | 6 +++---
+ 3 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/rkaiq/cmake/CompileOptions.cmake b/rkaiq/cmake/CompileOptions.cmake
-index 47edbef16fe6..adccffc9f678 100644
---- a/rkaiq/cmake/CompileOptions.cmake
-+++ b/rkaiq/cmake/CompileOptions.cmake
-@@ -23,11 +23,15 @@ if (ARCH STREQUAL "arm")
-         )
- endif()
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9e324032e61b..3e0c8db3fcdd 100755
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -374,7 +374,9 @@ endif()
  
--if (ARCH STREQUAL "aarch64")
--    add_compile_options(
--        -march=armv8-a
--        )
--endif()
-+
-+# This conflicts with Yocto's -mcpu=cortex-a76.cortex-a55
+ add_subdirectory(rkaiq_3A_server)
+ 
+-add_subdirectory(tests/rkisp_demo)
++# depends on rga library 
++#add_subdirectory(tests/rkisp_demo)
 +#
-+#if (ARCH STREQUAL "aarch64")
-+#    add_compile_options(
-+#        -march=armv8-a
-+#        )
-+#endif()
-+
  
- if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-     if (ARCH STREQUAL "arm")
-diff --git a/rkaiq/iq_parser_v2/CMakeLists.txt b/rkaiq/iq_parser_v2/CMakeLists.txt
-index 711baa67da73..49e465343e6e 100644
---- a/rkaiq/iq_parser_v2/CMakeLists.txt
-+++ b/rkaiq/iq_parser_v2/CMakeLists.txt
-@@ -25,7 +25,7 @@ endif()
+ cmake_policy(SET CMP0015 NEW)
+ 
+diff --git a/iq_parser_v2/CMakeLists.txt b/iq_parser_v2/CMakeLists.txt
+index 9248bce15b3b..f029248b38a3 100644
+--- a/iq_parser_v2/CMakeLists.txt
++++ b/iq_parser_v2/CMakeLists.txt
+@@ -12,7 +12,7 @@ set(J2S_SRC
  #########################################################
  add_custom_command(
      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output.h
 -    COMMAND ${CMAKE_C_COMPILER}
-+    COMMAND ${CMAKE_C_COMPILER}  --sysroot=${CMAKE_SYSROOT}  # CMake does not automatically add --sysroot to add_custom_command
-     ${rk_aiq_SOURCE_DIR}/include/iq_parser_v2/RkAiqCalibDbTypesV2.h -E -C -o .temp.h ${ISP_HW_VERSION} ${DEFINE_USE_NEWSTRUCT}
-     -I${rk_aiq_SOURCE_DIR}/
-     -I${rk_aiq_SOURCE_DIR}/include
++    COMMAND ${CMAKE_C_COMPILER} --sysroot=${CMAKE_SYSROOT}  # CMake does not automatically add --sysroot to add_custom_command
+     ${CMAKE_SOURCE_DIR}/include/iq_parser_v2/RkAiqCalibDbTypesV2.h -E -C -o .temp.h ${ISP_HW_VERSION}
+     -I${CMAKE_SOURCE_DIR}/
+     -I${CMAKE_SOURCE_DIR}/include
 diff --git a/rkaiq_3A_server/CMakeLists.txt b/rkaiq_3A_server/CMakeLists.txt
-index b8e0fcaff0c3..db8b278a5edb 100644
+index fcc68b3ee5a8..b4288039e386 100644
 --- a/rkaiq_3A_server/CMakeLists.txt
 +++ b/rkaiq_3A_server/CMakeLists.txt
-@@ -134,11 +134,12 @@ if(BUILDROOT_BUILD_PROJECT)
+@@ -109,11 +109,11 @@ if(BUILDROOT_BUILD_PROJECT)
  		WORLD_EXECUTE WORLD_READ)
  else()
  	install(TARGETS rkaiq_3A_server
 -		RUNTIME DESTINATION "usr/bin"
 -		LIBRARY DESTINATION "usr/lib"
-+		# Don't hardcode install paths; otherwise you end up with destination looking like: /usr/usr/bin/rkaiq_3A_server
-+		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-+		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
++		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" # fix do_install
++		LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
  		)
  
 -	install(FILES S40rkaiq_3A DESTINATION "etc/init.d"
@@ -68,18 +56,6 @@ index b8e0fcaff0c3..db8b278a5edb 100644
  		PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
  		GROUP_EXECUTE GROUP_READ
  		WORLD_EXECUTE WORLD_READ)
-diff --git a/IspFec/CMakeLists.txt b/IspFec/CMakeLists.txt
-index 464a2472dcc6..75b35b7f6f6d 100644
---- a/IspFec/CMakeLists.txt
-+++ b/IspFec/CMakeLists.txt
-@@ -127,6 +127,6 @@ install(FILES ${PROJECT_BINARY_DIR}/rkfec_config.h DESTINATION include/IspFec)
- install(DIRECTORY include/ DESTINATION include/IspFec FILES_MATCHING PATTERN "*.h")
- install(FILES ${CMAKE_LIBRARY_PATH}/libIspFec.so DESTINATION lib)
- install(FILES ${CMAKE_LIBRARY_PATH}/libIspFec_static.a DESTINATION lib RENAME libIspFec.a)
--install(DIRECTORY fec_calib/ DESTINATION usr/share/fec_calib FILES_MATCHING PATTERN "*.ini")
-+install(DIRECTORY fec_calib/ DESTINATION ${CMAKE_INSTALL_DATADIR}/fec_calib FILES_MATCHING PATTERN "*.ini")
- 
- add_subdirectory(sample)
 -- 
 2.34.1
 
