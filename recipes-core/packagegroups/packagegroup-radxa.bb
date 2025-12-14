@@ -40,7 +40,10 @@ RDEPENDS:packagegroup-radxa-media = " \
 RDEPENDS:packagegroup-radxa-graphics = " \
     libdrm \
     libdrm-tests \
-    libdrm-dev \
     libdrm-kms \
-    rockchip-libmali \
+    libmali \
+    libegl \
+    libgles2 \
+    libgles3 \
+    libgbm \
 "
